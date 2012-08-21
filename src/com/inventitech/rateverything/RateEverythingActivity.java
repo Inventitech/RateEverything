@@ -9,20 +9,42 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.facebook.android.DialogError;
+import com.facebook.android.Facebook;
+import com.facebook.android.Facebook.DialogListener;
+import com.facebook.android.FacebookError;
+
 public class RateEverythingActivity extends Activity {
 	public static String RATING_STRING_EXTRA = "com.inventitech.rateverything.rating";
 
 	public static int inst = 0;
 
+	private Facebook facebook;
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (inst == 0) {
-			setContentView(R.layout.main);
-			inst++;
-		}
+		setContentView(R.layout.main);
 		changeRating();
+		facebook = new Facebook(getString(R.string.facebook_app_id));
+		facebook.authorize(this, new DialogListener() {
+			@Override
+			public void onComplete(Bundle values) {
+			}
+
+			@Override
+			public void onFacebookError(FacebookError error) {
+			}
+
+			@Override
+			public void onError(DialogError e) {
+			}
+
+			@Override
+			public void onCancel() {
+			}
+		});
 	}
 
 	public void clicked10(View view) {
@@ -72,5 +94,12 @@ public class RateEverythingActivity extends Activity {
 		TextView ratingTextView = (TextView) getWindow().findViewById(
 				R.id.rating);
 		ratingTextView.setText(rating);
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		facebook.authorizeCallback(requestCode, resultCode, data);
 	}
 }
