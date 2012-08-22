@@ -13,6 +13,7 @@ import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
+import com.inventitech.rateverything.RatingRequest.RATING;
 
 public class RateEverythingActivity extends Activity {
 	public static String RATING_STRING_EXTRA = "com.inventitech.rateverything.rating";
@@ -54,39 +55,34 @@ public class RateEverythingActivity extends Activity {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						sendRating("10");
+						RatingRequestSender.sendRating(new RatingRequest(RATING.RATING_10));
+						;
 					}
 				}).setNegativeButton("No", null).show();
 	}
 
 	public void clicked9(View view) {
-		sendRating("9");
+		RatingRequestSender.sendRating(new RatingRequest(RATING.RATING_9));
 	}
 
 	public void clicked8(View view) {
-		sendRating("8");
+		RatingRequestSender.sendRating(new RatingRequest(RATING.RATING_8));
 	}
 
 	public void clicked7(View view) {
-		sendRating("7");
+		RatingRequestSender.sendRating(new RatingRequest(RATING.RATING_7));
 	}
 
 	public void clicked6(View view) {
-		sendRating("6");
+		RatingRequestSender.sendRating(new RatingRequest(RATING.RATING_6));
 	}
 
 	public void clicked5(View view) {
-		sendRating("5");
+		RatingRequestSender.sendRating(new RatingRequest(RATING.RATING_5));
 	}
 
 	public void clickedXD(View view) {
-		sendRating("xD");
-	}
-
-	public void sendRating(String rating) {
-		Intent intent = new Intent(this, RateEverythingActivity.class);
-		intent.putExtra(RATING_STRING_EXTRA, rating);
-		startActivity(intent);
+		RatingRequestSender.sendRating(new RatingRequest(RATING.RATING_XD));
 	}
 
 	private void changeRating() {
