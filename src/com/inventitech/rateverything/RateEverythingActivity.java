@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,14 +15,24 @@ import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
-import com.inventitech.rateverything.RatingRequest.RATING;
+import com.inventitech.rateverything.json.RatingTransfer;
+import com.inventitech.rateverything.json.RatingTransfer.RATING;
 
 public class RateEverythingActivity extends Activity {
 	public static String RATING_STRING_EXTRA = "com.inventitech.rateverything.rating";
 
-	public static int inst = 0;
-
 	private Facebook facebook;
+
+	private Handler alertHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			displayAlert((String) msg.getData().get(
+					RatingRequestSender.MESSAGE_STRING));
+		}
+	};
+
+	private RatingRequestSender ratingSender = new RatingRequestSender(
+			alertHandler);
 
 	/** Called when the activity is first created. */
 	@Override
@@ -36,10 +48,12 @@ public class RateEverythingActivity extends Activity {
 
 			@Override
 			public void onFacebookError(FacebookError error) {
+				displayAlert("Facebook Login failed (Incorrect username/password?)");
 			}
 
 			@Override
 			public void onError(DialogError e) {
+				displayAlert("Facebook Login failed (No connection?)");
 			}
 
 			@Override
@@ -55,34 +69,35 @@ public class RateEverythingActivity extends Activity {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						RatingRequestSender.sendRating(new RatingRequest(RATING.RATING_10));
+						ratingSender.sendRating(new RatingTransfer(
+								RATING.RATING_10));
 						;
 					}
 				}).setNegativeButton("No", null).show();
 	}
 
 	public void clicked9(View view) {
-		RatingRequestSender.sendRating(new RatingRequest(RATING.RATING_9));
+		ratingSender.sendRating(new RatingTransfer(RATING.RATING_9));
 	}
 
 	public void clicked8(View view) {
-		RatingRequestSender.sendRating(new RatingRequest(RATING.RATING_8));
+		ratingSender.sendRating(new RatingTransfer(RATING.RATING_8));
 	}
 
 	public void clicked7(View view) {
-		RatingRequestSender.sendRating(new RatingRequest(RATING.RATING_7));
+		ratingSender.sendRating(new RatingTransfer(RATING.RATING_7));
 	}
 
 	public void clicked6(View view) {
-		RatingRequestSender.sendRating(new RatingRequest(RATING.RATING_6));
+		ratingSender.sendRating(new RatingTransfer(RATING.RATING_6));
 	}
 
 	public void clicked5(View view) {
-		RatingRequestSender.sendRating(new RatingRequest(RATING.RATING_5));
+		ratingSender.sendRating(new RatingTransfer(RATING.RATING_5));
 	}
 
 	public void clickedXD(View view) {
-		RatingRequestSender.sendRating(new RatingRequest(RATING.RATING_XD));
+		ratingSender.sendRating(new RatingTransfer(RATING.RATING_XD));
 	}
 
 	private void changeRating() {
@@ -97,5 +112,13 @@ public class RateEverythingActivity extends Activity {
 		super.onActivityResult(requestCode, resultCode, data);
 
 		facebook.authorizeCallback(requestCode, resultCode, data);
+	}
+
+	public void displayAlert(String message) {
+		AlertDialog alert = new AlertDialog.Builder(this).setNegativeButton(
+				"OK", null).create();
+		alert.setMessage(message);
+		alert.setCanceledOnTouchOutside(true);
+		alert.show();
 	}
 }
