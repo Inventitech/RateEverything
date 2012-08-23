@@ -7,7 +7,19 @@ import android.os.Message;
 public class AlertMessagePreparer {
 	public static String MESSAGE_STRING = "message";
 
-	public AlertMessagePreparer(Handler handler) {
+	private static AlertMessagePreparer alert;
+
+	private AlertMessagePreparer() {
+	}
+
+	public static AlertMessagePreparer getInstance() {
+		if (alert == null) {
+			alert = new AlertMessagePreparer();
+		}
+		return alert;
+	}
+
+	public void setHanlder(Handler handler) {
 		this.handler = handler;
 	}
 

@@ -11,15 +11,12 @@ import android.os.Message;
 import android.view.View;
 import android.widget.TextView;
 
-import com.facebook.android.Facebook;
 import com.inventitech.rateverything.json.RatingTransfer;
 import com.inventitech.rateverything.json.RatingTransfer.RATING;
 import com.inventitech.rateverything.utils.AlertMessagePreparer;
 
 public class RateEverythingActivity extends Activity {
 	public static String RATING_STRING_EXTRA = "com.inventitech.rateverything.rating";
-
-	private Facebook facebook;
 
 	private Handler alertHandler = new Handler() {
 		@Override
@@ -29,17 +26,19 @@ public class RateEverythingActivity extends Activity {
 		}
 	};
 
-	private AlertMessagePreparer alert = new AlertMessagePreparer(alertHandler);
+	private AlertMessagePreparer alert = AlertMessagePreparer.getInstance();
 
-	private RatingRequestSender ratingSender = new RatingRequestSender(alert);
+	private RatingTransferSender ratingSender = new RatingTransferSender(alert);
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		alert.setHanlder(alertHandler);
+		Intent facebookSignOnIntent = new Intent(this,
+				FacebookSignOnActivity.class);
+		startActivity(facebookSignOnIntent);
 		setContentView(R.layout.main);
-		changeRating();
-
 	}
 
 	public void clicked10(View view) {
@@ -85,13 +84,6 @@ public class RateEverythingActivity extends Activity {
 		TextView ratingTextView = (TextView) getWindow().findViewById(
 				R.id.rating);
 		ratingTextView.setText(rating);
-	}
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-
-		facebook.authorizeCallback(requestCode, resultCode, data);
 	}
 
 	private void displayAlert(String message) {

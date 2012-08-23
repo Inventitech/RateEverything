@@ -18,14 +18,14 @@ import com.google.gson.Gson;
 import com.inventitech.rateverything.json.RatingTransfer;
 import com.inventitech.rateverything.utils.AlertMessagePreparer;
 
-public class RatingRequestSender {
+public class RatingTransferSender {
 
 	private static String server = "http://10.0.2.2:9000";
 	private static String operation = "add";
 
 	private AlertMessagePreparer alert;
 
-	public RatingRequestSender(AlertMessagePreparer alert) {
+	public RatingTransferSender(AlertMessagePreparer alert) {
 		this.alert = alert;
 	}
 
