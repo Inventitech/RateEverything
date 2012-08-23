@@ -11,12 +11,10 @@ import android.os.Message;
 import android.view.View;
 import android.widget.TextView;
 
-import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
-import com.facebook.android.Facebook.DialogListener;
-import com.facebook.android.FacebookError;
 import com.inventitech.rateverything.json.RatingTransfer;
 import com.inventitech.rateverything.json.RatingTransfer.RATING;
+import com.inventitech.rateverything.utils.AlertMessagePreparer;
 
 public class RateEverythingActivity extends Activity {
 	public static String RATING_STRING_EXTRA = "com.inventitech.rateverything.rating";
@@ -27,12 +25,13 @@ public class RateEverythingActivity extends Activity {
 		@Override
 		public void handleMessage(Message msg) {
 			displayAlert((String) msg.getData().get(
-					RatingRequestSender.MESSAGE_STRING));
+					AlertMessagePreparer.MESSAGE_STRING));
 		}
 	};
 
-	private RatingRequestSender ratingSender = new RatingRequestSender(
-			alertHandler);
+	private AlertMessagePreparer alert = new AlertMessagePreparer(alertHandler);
+
+	private RatingRequestSender ratingSender = new RatingRequestSender(alert);
 
 	/** Called when the activity is first created. */
 	@Override
@@ -40,26 +39,7 @@ public class RateEverythingActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		changeRating();
-		facebook = new Facebook(getString(R.string.facebook_app_id));
-		facebook.authorize(this, new DialogListener() {
-			@Override
-			public void onComplete(Bundle values) {
-			}
 
-			@Override
-			public void onFacebookError(FacebookError error) {
-				displayAlert("Facebook Login failed (Incorrect username/password?)");
-			}
-
-			@Override
-			public void onError(DialogError e) {
-				displayAlert("Facebook Login failed (No connection?)");
-			}
-
-			@Override
-			public void onCancel() {
-			}
-		});
 	}
 
 	public void clicked10(View view) {
@@ -114,7 +94,7 @@ public class RateEverythingActivity extends Activity {
 		facebook.authorizeCallback(requestCode, resultCode, data);
 	}
 
-	public void displayAlert(String message) {
+	private void displayAlert(String message) {
 		AlertDialog alert = new AlertDialog.Builder(this).setNegativeButton(
 				"OK", null).create();
 		alert.setMessage(message);
