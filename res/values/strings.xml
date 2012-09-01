@@ -4,5 +4,6 @@
     <string name="hello">Hello World, RateEverythingActivity!</string>
     <string name="app_name">RateEverything</string>
     <string name="facebook_app_id">456453094385188</string>
+    <string name="google_project_id">949372286914</string>
 
 </resources>

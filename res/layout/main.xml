@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:minHeight="65dip"
-            android:onClick="clicked8"
+            android:onClick="onClickedRatingButton"
             android:text="8" />
 
         <Button
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:minHeight="65dip"
-            android:onClick="clicked9"
+            android:onClick="onClickedRatingButton"
             android:text="9" />
 
         <Button
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:minHeight="65dip"
-            android:onClick="clicked10"
+            android:onClick="onClickedRatingButton"
             android:text="10" />
     </LinearLayout>
 
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:minHeight="65dip"
-            android:onClick="clicked5"
+            android:onClick="onClickedRatingButton"
             android:text="5" />
 
         <Button
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:minHeight="65dip"
-            android:onClick="clicked6"
+            android:onClick="onClickedRatingButton"
             android:text="6" />
 
         <Button
@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:minHeight="65dip"
-            android:onClick="clicked7"
+            android:onClick="onClickedRatingButton"
             android:text="7" />
     </LinearLayout>
 
@@ -88,11 +88,13 @@
         android:orientation="horizontal" >
 
         <Button
+            android:id="@+id/buttonxD"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="65dip"
-            android:onClick="clickedXD"
+            android:onClick="onClickedRatingButton"
             android:text="xD" />
+
     </LinearLayout>
 
 </LinearLayout>

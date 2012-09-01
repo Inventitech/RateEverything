@@ -8,9 +8,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
+import com.google.android.gcm.GCMRegistrar;
 import com.inventitech.rateverything.json.RatingTransfer;
 import com.inventitech.rateverything.json.RatingTransfer.RATING;
 import com.inventitech.rateverything.utils.AlertMessagePreparer;
@@ -34,56 +35,63 @@ public class RateEverythingActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		try {
+			GCMRegistrar.checkDevice(this);
+		} catch (UnsupportedOperationException e) {
+			displayAlert("Please install Android GCM service. This typically means you don't use");
+			return;
+		}
 		alert.setHanlder(alertHandler);
 		Intent facebookSignOnIntent = new Intent(this,
 				FacebookSignOnActivity.class);
 		startActivity(facebookSignOnIntent);
+		GCMRegistrar.checkManifest(this);
+		final String regId = GCMRegistrar.getRegistrationId(this);
+		if (regId.equals("")) {
+			GCMRegistrar.register(this, getString(R.string.google_project_id));
+		} else {
+			Log.v("RateEverything", "Already registered");
+		}
 		setContentView(R.layout.main);
 	}
 
-	public void clicked10(View view) {
-		new AlertDialog.Builder(view.getContext())
-				.setMessage("Art thou sure to rate 10?")
-				.setPositiveButton("Yes", new OnClickListener() {
+	public void onClickedRatingButton(View view) {
+		RATING rating = RATING.RATING_XD;
+		switch (view.getId()) {
+		case R.id.button10:
+			new AlertDialog.Builder(view.getContext())
+					.setMessage("Art thou sure to rate 10?")
+					.setPositiveButton("Yes", new OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						ratingSender.sendRating(new RatingTransfer(
-								RATING.RATING_10));
-						;
-					}
-				}).setNegativeButton("No", null).show();
-	}
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							ratingSender.sendRating(new RatingTransfer(
+									RATING.RATING_10));
+							;
+						}
+					}).setNegativeButton("No", null).show();
+			return;
+		case R.id.button9:
+			rating = RATING.RATING_9;
+			break;
+		case R.id.button8:
+			rating = RATING.RATING_8;
+			break;
+		case R.id.button7:
+			rating = RATING.RATING_7;
+			break;
+		case R.id.button6:
+			rating = RATING.RATING_6;
+			break;
+		case R.id.button5:
+			rating = RATING.RATING_5;
+			break;
+		case R.id.buttonxD:
+			rating = RATING.RATING_XD;
+			break;
 
-	public void clicked9(View view) {
-		ratingSender.sendRating(new RatingTransfer(RATING.RATING_9));
-	}
-
-	public void clicked8(View view) {
-		ratingSender.sendRating(new RatingTransfer(RATING.RATING_8));
-	}
-
-	public void clicked7(View view) {
-		ratingSender.sendRating(new RatingTransfer(RATING.RATING_7));
-	}
-
-	public void clicked6(View view) {
-		ratingSender.sendRating(new RatingTransfer(RATING.RATING_6));
-	}
-
-	public void clicked5(View view) {
-		ratingSender.sendRating(new RatingTransfer(RATING.RATING_5));
-	}
-
-	public void clickedXD(View view) {
-		ratingSender.sendRating(new RatingTransfer(RATING.RATING_XD));
-	}
-
-	private void changeRating() {
-		String rating = getIntent().getStringExtra(RATING_STRING_EXTRA);
-		TextView ratingTextView = (TextView) getWindow().findViewById(
-				R.id.rating);
-		ratingTextView.setText(rating);
+		}
+		ratingSender.sendRating(new RatingTransfer(rating));
 	}
 
 	private void displayAlert(String message) {
